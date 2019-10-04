@@ -2,7 +2,7 @@ var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
 var cors = require('cors')
-const db = require('./database/index')
+const db = require('./database')
 const port = 1912
 
 app.use(bodyParser.json())
@@ -21,10 +21,10 @@ app.get('/passengers', (req, res) => {
             sql = `${sql} Name like '%${req.query.name}%' and`
         }
         if(req.query.age_min){
-            sql = `${sql} Age > ${req.query.age_min} and`
+            sql = `${sql} Age >= ${req.query.age_min} and`
         }
         if(req.query.age_max){
-            sql = `${sql} Age < ${req.query.age_max} and`
+            sql = `${sql} Age <= ${req.query.age_max} and`
         }
         if(req.query.gender){
             if (req.query.gender == 'all'){
@@ -50,6 +50,14 @@ app.get('/passengers', (req, res) => {
         sql = sql.slice(0, -4)
     }
 
+    db.query(sql, (err, result) => {
+        if(err) throw err
+        res.send(result)
+    })
+})
+
+app.get('/classes', (req, res) => {
+    let sql = `select Pclass from train group by Pclass order by Pclass`
     db.query(sql, (err, result) => {
         if(err) throw err
         res.send(result)

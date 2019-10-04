@@ -7,7 +7,7 @@ class App extends Component {
     render() {
         return (
             <Switch>
-                <Route component={Filter} path="/" exact/>
+                <Route component={Filter} path="/"/>
             </Switch>
         )
     }

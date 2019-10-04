@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import querystring from 'query-string'
 const URL_API = 'http://localhost:1912/'
 
 class Filter extends Component {
@@ -12,15 +13,33 @@ class Filter extends Component {
             ageMax: '',
             gender: '',
             class: '',
-            survived: ''
+            survived: '',
+            classes: []
         }
     }
 
     componentDidMount () {
         this.getData()
+        this.getClassData()
     }
 
     getData = () => {
+        let params = querystring.parse(this.props.location.search)
+
+        axios.get(
+            URL_API + 'passengers', {
+                params: params
+            }
+        ).then(res => {
+            this.setState({
+                passengers: res.data
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    onFilterButton = () => {
         let params = {}
         if(this.state.name){
             params = {...params, name: this.state.name}
@@ -41,6 +60,8 @@ class Filter extends Component {
             params = {...params, survived: this.state.survived}
         }
 
+        this.props.history.push(`/filter?${querystring.stringify(params)}`)
+
         axios.get(
             URL_API + 'passengers', {
                 params: params
@@ -60,11 +81,31 @@ class Filter extends Component {
                 <tr key={index}>
                     <td>{passenger.PassengerId}</td>
                     <td>{passenger.Name}</td>
-                    <td>{passenger.Sex === "male" ? "M" : "F"}</td>
                     <td>{passenger.Age}</td>
-                    <td>{passenger.Pclass === 1 ? "First Class" : passenger.Pclass === 2 ? "Business" : "Economy"}</td>
+                    <td>{passenger.Sex === "male" ? "Male" : "Female"}</td>
+                    <td>{passenger.Pclass}</td>
                     <td>{passenger.Survived ? "Alive" : "Deceased"}</td>
                 </tr>
+            )
+        })
+    }
+
+    getClassData = () => {
+        axios.get(
+            URL_API + 'classes'
+        ).then(res => {
+            this.setState({
+                classes: res.data
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    classList = () => {
+        return this.state.classes.map((val, index) => {
+            return (
+                <option key={index} value={val.Pclass}>{val.Pclass}</option>
             )
         })
     }
@@ -72,12 +113,12 @@ class Filter extends Component {
     render() {
         return (
             <div className="container">
-                <div className="row mt-5 mb-5">
-                    <div className="col-2">
+                <div className="row mt-5 mb-4">
+                    <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
                         <h6>Name</h6>
                         <input ref="name" onChange={e => this.setState({name: e.target.value})} className="form-control"/>
                     </div>
-                    <div className="col-2">
+                    <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
                         <h6>Age</h6>
                         <div className="row">
                             <div className="col-6 pr-1">
@@ -88,7 +129,7 @@ class Filter extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-2">
+                    <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
                         <h6>Gender</h6>
                         <select onChange={e => this.setState({gender: e.target.value})} className="form-control">
                             <option value="all">All</option>
@@ -96,16 +137,14 @@ class Filter extends Component {
                             <option value="female">Female</option>
                         </select>
                     </div>
-                    <div className="col-2">
+                    <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
                         <h6>Class</h6>
                         <select onChange={e => this.setState({class: e.target.value})} className="form-control">
                             <option value="all">All</option>
-                            <option value="1">First Class</option>
-                            <option value="2">Business</option>
-                            <option value="3">Economy</option>
+                            {this.classList()}
                         </select>
                     </div>
-                    <div className="col-2">
+                    <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
                         <h6>Survived</h6>
                         <select onChange={e => this.setState({survived: e.target.value})} className="form-control">
                             <option value="all">All</option>
@@ -113,8 +152,8 @@ class Filter extends Component {
                             <option value="0">Deceased</option>
                         </select>
                     </div>
-                    <div className="col-2">
-                        <button onClick={() => this.getData()} className="btn btn-primary btn-block" style={{marginTop: "27px"}}>Filter</button>
+                    <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
+                        <button onClick={() => this.onFilterButton()} className="btn btn-primary btn-block" style={{marginTop: "27px"}}>Filter</button>
                     </div>
                 </div>
                 <table className="table">
@@ -122,8 +161,8 @@ class Filter extends Component {
                         <tr>
                             <th width="8%">ID</th>
                             <th width="52%">Name</th>
-                            <th width="10%">Gender</th>
                             <th width="10%">Age</th>
+                            <th width="10%">Gender</th>
                             <th width="10%">Class</th>
                             <th width="10%">Survived</th>
                         </tr>
