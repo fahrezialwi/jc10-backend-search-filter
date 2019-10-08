@@ -1,10 +1,10 @@
 var mysql = require('mysql')
 
 const db = mysql.createConnection({
-    user: 'root',
+    user: 'fahrezialwi',
     password: '12345678',
     database: 'titanic',
-    host: 'localhost'
+    host: 'db4free.net'
 })
 
 module.exports = db

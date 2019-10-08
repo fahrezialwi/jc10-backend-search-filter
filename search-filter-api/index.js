@@ -3,7 +3,7 @@ var app = express()
 var bodyParser = require('body-parser')
 var cors = require('cors')
 const db = require('./database')
-const port = 1912
+const port = process.env.PORT || 1912
 
 app.use(bodyParser.json())
 app.use(cors())

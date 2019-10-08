@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import querystring from 'query-string'
-const URL_API = 'http://localhost:1912/'
+const URL_API = 'http://api-titanic-manifest.herokuapp.com/'
 
 class Filter extends Component {
     constructor(props){
@@ -112,8 +112,8 @@ class Filter extends Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="row mt-5 mb-4">
+            <div className="container mt-5">
+                <div className="row pt-5 pb-4">
                     <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
                         <h6>Name</h6>
                         <input ref="name" onChange={e => this.setState({name: e.target.value})} className="form-control"/>
@@ -122,7 +122,7 @@ class Filter extends Component {
                         <h6>Age</h6>
                         <div className="row">
                             <div className="col-6 pr-1">
-                                <input ref="ageMin" onChange={e => this.setState({ageMin: e.target.value})} className="form-control" placeholder="Min"/>
+                                <input ref="ageMin"onChange={e => this.setState({ageMin: e.target.value})} className="form-control" placeholder="Min"/>
                             </div>
                             <div className="col-6 pl-1">  
                                 <input ref="ageMax" onChange={e => this.setState({ageMax: e.target.value})} className="form-control" placeholder="Max"/>
@@ -153,24 +153,26 @@ class Filter extends Component {
                         </select>
                     </div>
                     <div className="col-lg-2 col-md-4 col-sm-4 mb-3">
-                        <button onClick={() => this.onFilterButton()} className="btn btn-primary btn-block" style={{marginTop: "27px"}}>Filter</button>
+                        <button onClick={() => this.onFilterButton()} className="btn btn-dark btn-block btn-filter" style={{marginTop:"27px"}}>Filter</button>
                     </div>
                 </div>
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th width="8%">ID</th>
-                            <th width="52%">Name</th>
-                            <th width="10%">Age</th>
-                            <th width="10%">Gender</th>
-                            <th width="10%">Class</th>
-                            <th width="10%">Survived</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.passengerList()}
-                    </tbody>
-                </table>
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th width="8%">ID</th>
+                                <th width="52%">Name</th>
+                                <th width="10%">Age</th>
+                                <th width="10%">Gender</th>
+                                <th width="10%">Class</th>
+                                <th width="10%">Survived</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.passengerList()}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         )
     }
