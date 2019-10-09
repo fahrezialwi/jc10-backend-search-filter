@@ -52,7 +52,17 @@ app.get('/passengers', (req, res) => {
 
     db.query(sql, (err, result) => {
         if(err) throw err
-        res.send(result)
+        if (result.length > 0){
+            res.send({
+                status: 200,
+                results: result
+            })
+        } else {
+            res.send({
+                status: 404,
+                results: result
+            })
+        }
     })
 })
 
@@ -60,7 +70,17 @@ app.get('/classes', (req, res) => {
     let sql = `select Pclass from train group by Pclass order by Pclass`
     db.query(sql, (err, result) => {
         if(err) throw err
-        res.send(result)
+        if (result.length > 0){
+            res.send({
+                status: 200,
+                results: result
+            })
+        } else {
+            res.send({
+                status: 404,
+                results: result
+            })
+        }
     })
 })
 
